@@ -1,0 +1,128 @@
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+        .navbar-brand-custom {
+            font-weight: 700;
+            color: #0d6efd;
+        }
+
+        /* --- Certificate --- */
+        .cert-stage {
+            max-width: 980px;
+            margin: 0 auto;
+        }
+        .certificate {
+            position: relative;
+            background: #fffdf8;
+            border-radius: 6px;
+            box-shadow: 0 10px 40px rgba(15, 23, 42, 0.12);
+            padding: 56px 64px;
+            overflow: hidden;
+        }
+        .certificate::before {
+            content: "";
+            position: absolute;
+            inset: 14px;
+            border: 1.5px solid #c9a24b;
+            pointer-events: none;
+        }
+        .certificate::after {
+            content: "";
+            position: absolute;
+            inset: 20px;
+            border: 1px solid #c9a24b;
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .cert-eyebrow {
+            letter-spacing: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94765a;
+            text-transform: uppercase;
+        }
+        .cert-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 700;
+            font-size: 2.6rem;
+            color: #1e293b;
+            letter-spacing: 1px;
+        }
+        .cert-subtext {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        .cert-name {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.2rem;
+            color: #0d6efd;
+            margin: 10px 0 4px;
+            line-height: 1.1;
+        }
+        .cert-course {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-size: 1.6rem;
+            color: #1e293b;
+        }
+        .cert-divider {
+            width: 80px;
+            height: 3px;
+            background: #c9a24b;
+            margin: 18px auto;
+            border-radius: 2px;
+        }
+        .cert-seal {
+            width: 84px;
+            height: 84px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c9a24b, #e8c877);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 2rem;
+            box-shadow: 0 6px 16px rgba(201, 162, 75, 0.4);
+            margin: 0 auto;
+        }
+        .cert-sign-line {
+            border-top: 1.5px solid #94765a;
+            padding-top: 6px;
+            max-width: 220px;
+            margin: 0 auto;
+        }
+        .cert-meta {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            letter-spacing: 0.5px;
+        }
+
+        .action-bar {
+            max-width: 980px;
+            margin: 24px auto 0;
+        }
+
+        .locked-icon {
+            font-size: 3.2rem;
+            color: #cbd5e1;
+        }
+
+        @media print {
+            body {
+                background: #fff !important;
+            }
+            nav, .action-bar, .no-print {
+                display: none !important;
+            }
+            .cert-stage {
+                max-width: 100%;
+            }
+            .certificate {
+                box-shadow: none;
+                padding: 40px;
+            }
+        }
+    

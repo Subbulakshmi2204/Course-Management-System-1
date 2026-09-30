@@ -1,0 +1,64 @@
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+        .navbar-brand-custom {
+            font-weight: 700;
+            color: #0d6efd;
+        }
+        .dashboard-card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            background-color: #ffffff;
+            transition: transform 0.2s ease;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+        }
+        .progress {
+            height: 8px;
+            border-radius: 4px;
+        }
+        .badge-custom {
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+        .empty-state-icon {
+            font-size: 3rem;
+            color: #6c757d;
+            opacity: 0.5;
+        }
+        .filter-pill {
+            border: 1px solid #dee2e6;
+            background: #fff;
+            color: #475569;
+            border-radius: 50px;
+            padding: 6px 18px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.15s ease;
+            cursor: pointer;
+        }
+        .filter-pill.active {
+            background: #0d6efd;
+            color: #fff;
+            border-color: #0d6efd;
+        }
+        .stage-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .module-row {
+            border-bottom: 1px solid #f1f3f5;
+            padding: 10px 0;
+        }
+        .module-row:last-child {
+            border-bottom: none;
+        }
+    
