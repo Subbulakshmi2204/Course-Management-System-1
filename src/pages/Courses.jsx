@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import PageCss from "../components/PageCss";
 import LegacyScript from "../components/LegacyScript";
+import { useCourses } from "../context/CourseContext";
+import CourseCard from "../components/CourseCard";
 
 const FILTERS = [
     { key: "all", label: "All" },
@@ -30,6 +32,7 @@ const COURSES = [
 export default function Courses() {
     // courses.js exposes these on window (filterCategory, handleEnrollment, ...)
     const call = (fn, ...args) => window[fn] && window[fn](...args);
+    const { courses, loading, error } = useCourses();
 
     return (
         <>
@@ -94,35 +97,26 @@ export default function Courses() {
                     ))}
                 </div>
 
-                <div className="row g-4" id="coursesGridContainer">
-                    {COURSES.map((c) => (
-                        <div key={c.id} className={`col-md-4 course-card-wrapper ${c.category}`}>
-                            <div className="card h-100 shadow-sm border-0 custom-card">
-                                <div className="course-img-container">
-                                    <img src={c.image} className="course-img" alt={c.alt} />
-                                </div>
-                                <div className="card-body p-4">
-                                    <span className={`badge bg-${c.badgeClass}-soft text-${c.badgeClass} mb-2`}>{c.badge}</span>
-                                    <h5 className="fw-bold mb-2">{c.title}</h5>
-                                    <p className="text-muted small mb-4">{c.description}</p>
-                                    <div className="row g-2 pt-3 border-top">
-                                        <div className="col-12">
-                                            <button className="btn btn-primary w-100 btn-sm py-2" onClick={() => call("handleEnrollment", c.id)}>
-                                                Enroll
-                                            </button>
-                                        </div>
-                                        <div className="col-12">
-                                            <button className="btn btn-outline-secondary w-100 btn-sm py-2" onClick={() => call("openAdminAuthModal", c.id)}>
-                                                <i className="bi bi-pencil-square me-1"></i>
-                                                Edit
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                <div className="container">
+    <h3 className="fw-bold mb-4">Courses from API</h3>
+    {loading && <p>Loading courses...</p>}
+    {error && <p className="text-danger">{error}</p>}
+    <div className="row g-4">
+        {!loading && !error && courses.map((course) => (
+            <div className="col-md-4" key={course.id}>
+                <CourseCard
+                    image={course.image}
+                    alt={course.courseName}
+                    title={course.courseName}
+                    description={course.overview}
+                    courseKey={course.id}
+                />
+            </div>
+        ))}
+    </div>
+</div>
+
+                
             </div>
 
             <div className="modal fade" id="adminAuthModal" tabIndex="-1" aria-hidden="true">
