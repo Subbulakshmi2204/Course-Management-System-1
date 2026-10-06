@@ -15,6 +15,56 @@
 
 import { setCurrentUser as setStateUser, getCurrentUser as getStateUser, setSelectedCourse } from './state.js';
 
+// ---- Backend mirror ------------------------------------------------------
+// Every change is still saved in localStorage exactly as before; it is ALSO
+// sent to the Express backend so it shows up in backend/data/db.json.
+// If the backend is not running, the app keeps working normally.
+const BACKEND_URL = 'http://localhost:4000';
+
+export function mirrorToBackend(method, path, body) {
+    try {
+        const options = { method, headers: { 'Content-Type': 'application/json' }, keepalive: true };
+        if (body !== undefined) options.body = JSON.stringify(body);
+        // keepalive requests are limited to ~64KB
+        if (options.body && options.body.length > 60000) delete options.keepalive;
+        return fetch(BACKEND_URL + path, options).catch(() => null);
+    } catch (e) {
+        return Promise.resolve(null);
+    }
+}
+
+/** Copies anything that exists in localStorage but not yet in the backend
+ *  (students and enrollments created before the backend was connected, or
+ *  while it was offline). Runs on every page load; only missing items are sent. */
+async function syncLocalToBackend() {
+    if (window.__courseHubSyncing) return;
+    window.__courseHubSyncing = true;
+    try {
+        const studentsRes = await fetch(BACKEND_URL + '/students');
+        if (studentsRes.ok) {
+            const remote = await studentsRes.json();
+            const known = new Set(remote.map((s) => String(s.email).toLowerCase()));
+            for (const u of readJSON('courseHub_users', [])) {
+                if (!known.has(String(u.email).toLowerCase())) {
+                    await mirrorToBackend('POST', '/students', u);
+                }
+            }
+        }
+        const enrollRes = await fetch(BACKEND_URL + '/enrollments');
+        if (enrollRes.ok) {
+            const remote = await enrollRes.json();
+            const known = new Set(remote.map((e) => e.id));
+            for (const e of readJSON('courseHub_enrollments', [])) {
+                if (!known.has(e.id)) await mirrorToBackend('POST', '/enrollments', e);
+            }
+        }
+    } catch (e) {
+        // backend offline - nothing to do
+    } finally {
+        window.__courseHubSyncing = false;
+    }
+}
+
 const USERS_KEY = 'courseHub_users';
 const USER_KEY = 'courseHub_currentUser';
 const SESSION_FLAG_KEY = 'courseHub_userLoggedIn';
@@ -74,6 +124,7 @@ export function registerUser({ name, email, password }) {
     const users = getUsers();
     users.push(user);
     saveUsers(users);
+    mirrorToBackend('POST', '/students', user);
     return { success: true, user };
 }
 
@@ -98,6 +149,7 @@ export function loginUser(email, password) {
         const users = getUsers();
         users.push(newUser);
         saveUsers(users);
+        mirrorToBackend('POST', '/students', newUser);
         persistSession(newUser);
         return { success: true, user: newUser };
     }
@@ -148,3 +200,4 @@ export function loginAdmin(email, password) {
 }
 
 initializeAuthStorage();
+syncLocalToBackend();

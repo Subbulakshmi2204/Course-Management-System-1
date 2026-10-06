@@ -13,7 +13,7 @@
    ========================================================================= */
 
 import { getLesson } from './course-content-data.js';
-import { getCurrentUser, getUsers } from './auth.js';
+import { getCurrentUser, getUsers, mirrorToBackend } from './auth.js';
 import { setSelectedCourse } from './state.js';
 
 const CATALOG_KEY = 'courseHub_tracks';
@@ -156,7 +156,30 @@ export function getEnrollments() {
     return readJSON(ENROLL_KEY, []);
 }
 export function saveEnrollments(list) {
+    const previous = getEnrollments();
     writeJSON(ENROLL_KEY, list);
+    mirrorEnrollments(previous, list);
+}
+
+// Sends only what changed to the Express backend (new, updated, removed).
+function mirrorEnrollments(previous, next) {
+    const prevById = new Map(previous.map((e) => [e.id, e]));
+    const nextIds = new Set(next.map((e) => e.id));
+
+    next.forEach((rec) => {
+        const old = prevById.get(rec.id);
+        if (!old) {
+            mirrorToBackend('POST', '/enrollments', rec);
+        } else if (JSON.stringify(old) !== JSON.stringify(rec)) {
+            mirrorToBackend('PATCH', '/enrollments/' + rec.id, rec).then((res) => {
+                if (res && res.status === 404) mirrorToBackend('POST', '/enrollments', rec);
+            });
+        }
+    });
+
+    previous.forEach((old) => {
+        if (!nextIds.has(old.id)) mirrorToBackend('DELETE', '/enrollments/' + old.id);
+    });
 }
 export function getEnrollmentsForStudent(studentId) {
     return getEnrollments().filter((e) => e.studentId === studentId);
