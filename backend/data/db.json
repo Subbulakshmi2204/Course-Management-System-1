@@ -1,0 +1,478 @@
+{
+  "courses": [
+    {
+      "id": "python-masterclass",
+      "courseName": "Python Programming Masterclass",
+      "courseCode": "CS101",
+      "instructor": "Dr. Sarah Jenkins",
+      "duration": "6 Weeks",
+      "level": "Beginner",
+      "category": "Programming",
+      "image": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Learn Python from basics to building real automation and scripting projects.",
+      "learningOutcomes": [
+        "Understand Python syntax and data types",
+        "Work with functions and modules",
+        "Read and write files and call APIs",
+        "Build a complete automation project"
+      ],
+      "modules": [
+        "Python Basics & Syntax",
+        "Data Structures",
+        "Functions & Modules",
+        "File Handling & APIs",
+        "Automation Capstone Project"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "fullstack-dev",
+      "courseName": "Full Stack Web Development",
+      "courseCode": "WD101",
+      "instructor": "Alex Rivera",
+      "duration": "12 Weeks",
+      "level": "Intermediate",
+      "category": "Web Development",
+      "image": "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Master front-end layouts, JavaScript, backend APIs and databases to build full stack apps.",
+      "learningOutcomes": [
+        "Build responsive layouts with HTML & CSS",
+        "Write modern JavaScript",
+        "Create and consume REST APIs",
+        "Work with backend databases"
+      ],
+      "modules": [
+        "HTML, CSS & Responsive Layout",
+        "JavaScript Fundamentals",
+        "Frontend Frameworks",
+        "Backend & REST APIs",
+        "Databases & Deployment"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "ai-foundations",
+      "courseName": "Artificial Intelligence Foundations",
+      "courseCode": "AI101",
+      "instructor": "Prof. Alan Turing",
+      "duration": "8 Weeks",
+      "level": "Advanced",
+      "category": "Artificial Intelligence",
+      "image": "https://lirp.cdn-website.com/de11e97c/dms3rep/multi/opt/AI+FOUNDATIONS-640w.png",
+      "overview": "Learn the fundamentals of AI, from search algorithms to neural networks.",
+      "learningOutcomes": [
+        "Understand core AI concepts",
+        "Apply search and optimization techniques",
+        "Understand neural network basics",
+        "Build and train a simple classifier"
+      ],
+      "modules": [
+        "Intro to AI Concepts",
+        "Search & Optimization",
+        "Neural Network Basics",
+        "Model Training",
+        "Capstone: Build a Classifier"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "gen-ai",
+      "courseName": "Generative AI & Large Language Models",
+      "courseCode": "AI102",
+      "instructor": "Dr. Maya Chen",
+      "duration": "10 Weeks",
+      "level": "Advanced",
+      "category": "Artificial Intelligence",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ-HU7vvPiM9SBgEhJCRi48tQbm7P-bLf4Yr15IJkEuI0ugjDK8GiNi_E&s=10",
+      "overview": "Explore transformer architecture, prompt engineering, fine-tuning and deploying LLM apps.",
+      "learningOutcomes": [
+        "Understand transformer architecture",
+        "Write effective prompts",
+        "Fine-tune a language model",
+        "Deploy an LLM-powered application"
+      ],
+      "modules": [
+        "Transformer Architecture",
+        "Prompt Engineering",
+        "Fine-Tuning Techniques",
+        "Context Windows & RAG",
+        "Deploying LLM Apps"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "cyber-security",
+      "courseName": "Cyber Security & Ethical Hacking",
+      "courseCode": "SEC101",
+      "instructor": "James Whitfield",
+      "duration": "9 Weeks",
+      "level": "Intermediate",
+      "category": "Security",
+      "image": "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Understand network defenses, threat modeling, penetration testing and incident response.",
+      "learningOutcomes": [
+        "Understand core network security concepts",
+        "Build a threat model",
+        "Perform basic penetration testing",
+        "Respond to a security incident"
+      ],
+      "modules": [
+        "Network Security Basics",
+        "Threat Modeling",
+        "Penetration Testing",
+        "Cryptography",
+        "Incident Response"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "data-analytics",
+      "courseName": "Data Science & Analytics BootCamp",
+      "courseCode": "DA101",
+      "instructor": "Priya Nandan",
+      "duration": "8 Weeks",
+      "level": "Intermediate",
+      "category": "Data Analytics",
+      "image": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Turn raw data into insight using statistics, Pandas and Tableau dashboards.",
+      "learningOutcomes": [
+        "Apply core statistics",
+        "Wrangle data with Pandas",
+        "Create effective visualizations",
+        "Build an interactive dashboard"
+      ],
+      "modules": [
+        "Statistics Refresher",
+        "Data Wrangling with Pandas",
+        "Data Visualization",
+        "Dashboarding with Tableau",
+        "Analytics Capstone"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "cross-platform-mobile",
+      "courseName": "Cross-Platform App Development",
+      "courseCode": "MOB101",
+      "instructor": "Liam O'Connor",
+      "duration": "7 Weeks",
+      "level": "Beginner",
+      "category": "Mobile Development",
+      "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Build apps for iOS and Android from a single codebase using modern frameworks.",
+      "learningOutcomes": [
+        "Design mobile-friendly UIs",
+        "Use a cross-platform framework",
+        "Manage app state",
+        "Publish an app to the app stores"
+      ],
+      "modules": [
+        "Mobile UI Fundamentals",
+        "Cross-Platform Frameworks",
+        "State Management",
+        "Native Device APIs",
+        "App Store Deployment"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "advanced-mobile",
+      "courseName": "Advanced iOS & Android Architecture",
+      "courseCode": "MOB102",
+      "instructor": "Nina Petrova",
+      "duration": "10 Weeks",
+      "level": "Advanced",
+      "category": "Mobile Development",
+      "image": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Go deeper into native architecture patterns, async programming and performance tuning.",
+      "learningOutcomes": [
+        "Apply native architecture patterns",
+        "Write asynchronous code",
+        "Manage screen lifecycles correctly",
+        "Optimize app performance"
+      ],
+      "modules": [
+        "Native Architecture Patterns",
+        "Async Programming",
+        "Lifecycle Management",
+        "Reactive Structures",
+        "Performance Optimization"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "reinforcement-learning",
+      "courseName": "Deep Reinforcement Learning",
+      "courseCode": "AI103",
+      "instructor": "Andrew Ng",
+      "duration": "10 Weeks",
+      "level": "Advanced",
+      "category": "Artificial Intelligence",
+      "image": "https://bs-uploads.toptal.io/blackfish-uploads/components/open_graph_image/8958314/og_image/optimized/deep-dive-into-reinforcement-learning-2393e08aa800a4247f6066eee9ba0e8d.png",
+      "overview": "Learn how agents learn from reward through Q-learning, policy gradients and actor-critic methods.",
+      "learningOutcomes": [
+        "Understand RL fundamentals",
+        "Implement Q-learning",
+        "Apply policy gradient methods",
+        "Train an agent using actor-critic methods"
+      ],
+      "modules": [
+        "RL Fundamentals",
+        "Q-Learning",
+        "Policy Gradients",
+        "Actor-Critic Methods",
+        "Capstone Agent Project"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "nlp",
+      "courseName": "Natural Language Processing",
+      "courseCode": "AI104",
+      "instructor": "Dr. Rachel Kim",
+      "duration": "9 Weeks",
+      "level": "Intermediate",
+      "category": "Artificial Intelligence",
+      "image": "https://miro.medium.com/1*tjyq7DrWkcK_rgym6YJ1Pw.png",
+      "overview": "Process and understand human language using modern transformer-based models.",
+      "learningOutcomes": [
+        "Preprocess and tokenize text",
+        "Understand sequence models",
+        "Apply transformers to NLP tasks",
+        "Build a working NLP application"
+      ],
+      "modules": [
+        "Text Preprocessing & Tokenization",
+        "Sequence Models",
+        "Transformers for NLP",
+        "Translation & Summarization",
+        "Capstone NLP App"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "mlops",
+      "courseName": "Predictive Analytics & ML Ops",
+      "courseCode": "ML101",
+      "instructor": "Carlos Mendes",
+      "duration": "6 Weeks",
+      "level": "Intermediate",
+      "category": "Machine Learning",
+      "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Take machine learning models from notebook to production with monitoring and CI/CD.",
+      "learningOutcomes": [
+        "Design an ML pipeline",
+        "Monitor a deployed model",
+        "Set up CI/CD for ML",
+        "Automate ML workflows"
+      ],
+      "modules": [
+        "ML Pipeline Design",
+        "Model Monitoring",
+        "CI/CD for ML",
+        "Automation & Orchestration",
+        "Capstone Deployment"
+      ],
+      "status": "Active"
+    },
+    {
+      "id": "devops",
+      "courseName": "Cloud Native DevOps Engine",
+      "courseCode": "DO101",
+      "instructor": "Sophie Laurent",
+      "duration": "8 Weeks",
+      "level": "Intermediate",
+      "category": "DevOps",
+      "image": "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Deploy and operate production systems using containers, Kubernetes and CI/CD pipelines.",
+      "learningOutcomes": [
+        "Containerize an application with Docker",
+        "Deploy to Kubernetes",
+        "Build a CI/CD pipeline",
+        "Monitor systems in production"
+      ],
+      "modules": [
+        "Containers & Docker",
+        "Kubernetes Basics",
+        "CI/CD Pipelines",
+        "Infrastructure as Code",
+        "Monitoring & Logging"
+      ],
+      "status": "Active"
+    }
+  ],
+  "students": [
+    {
+      "id": "alex-morgan",
+      "name": "Alex Morgan",
+      "email": "alex.morgan@example.com",
+      "password": "Student@123"
+    },
+    {
+      "name": "Test Student",
+      "email": "test@example.com",
+      "password": "Test@123",
+      "id": "stu-1791276685220-665"
+    },
+    {
+      "id": "stu-1791277534915-954",
+      "name": "Kir",
+      "email": "kir@gmail.com",
+      "password": "Keerthi07@"
+    }
+  ],
+  "enrollments": [
+    {
+      "id": "enr-1791277554021-652",
+      "studentId": "stu-1791277534915-954",
+      "studentName": "Kir",
+      "studentEmail": "kir@gmail.com",
+      "courseId": "ai-foundations",
+      "courseTitle": "Artificial Intelligence Foundations",
+      "mentor": "Prof. Alan Turing",
+      "duration": "8 Weeks",
+      "color": "info",
+      "enrolledDate": "2026-10-06",
+      "progress": 20,
+      "status": "ongoing",
+      "completedDate": null,
+      "modules": [
+        {
+          "id": 1,
+          "name": "Intro to AI Concepts",
+          "completed": true,
+          "content": [
+            {
+              "type": "image",
+              "title": "Intro to AI Concepts — Visual Overview",
+              "src": "https://lirp.cdn-website.com/de11e97c/dms3rep/multi/opt/AI+FOUNDATIONS-640w.png",
+              "caption": "Click the image once you've reviewed it to mark this step complete.",
+              "done": true
+            },
+            {
+              "type": "video",
+              "title": "Intro to AI Concepts — Video Walkthrough",
+              "src": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+              "caption": "Click / play the video to mark this step complete.",
+              "done": true
+            },
+            {
+              "type": "text",
+              "title": "Intro to AI Concepts — Reading",
+              "body": "<p>Artificial Intelligence is the field of building systems that perform tasks normally needing human intelligence, such as understanding language, recognising images and making decisions. Machine learning is a subset where systems learn patterns from data instead of following hand-written rules.</p><p class=\"fw-semibold mb-1\">Key points</p><ul class=\"mb-2\"><li>Narrow AI solves one task; general AI (hypothetical) would match human ability broadly.</li><li>Three learning styles: supervised, unsupervised and reinforcement.</li><li>Data quality matters as much as the algorithm.</li><li>AI systems can inherit bias from their training data.</li></ul><p class=\"mb-0\"><em>You have reached the end of this reading - great work!</em></p>",
+              "done": true
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Search & Optimization",
+          "completed": false,
+          "content": [
+            {
+              "type": "image",
+              "title": "Search & Optimization — Visual Overview",
+              "src": "https://lirp.cdn-website.com/de11e97c/dms3rep/multi/opt/AI+FOUNDATIONS-640w.png",
+              "caption": "Click the image once you've reviewed it to mark this step complete.",
+              "done": true
+            },
+            {
+              "type": "video",
+              "title": "Search & Optimization — Video Walkthrough",
+              "src": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+              "caption": "Click / play the video to mark this step complete.",
+              "done": true
+            },
+            {
+              "type": "text",
+              "title": "Search & Optimization — Reading",
+              "body": "<p>Many AI problems are searches for the best sequence of actions. Uninformed methods such as breadth-first and depth-first search explore blindly, while informed methods like A* use a heuristic estimate of the remaining distance to reach goals faster. Optimisation techniques such as gradient descent search for the best numeric settings.</p><p class=\"fw-semibold mb-1\">Key points</p><ul class=\"mb-2\"><li>BFS finds the shortest path in unweighted graphs.</li><li>A* combines path cost so far with a heuristic estimate.</li><li>A good heuristic never overestimates the true cost.</li><li>Gradient descent moves step by step downhill on an error surface.</li></ul><p class=\"mb-0\"><em>You have reached the end of this reading - great work!</em></p>",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "name": "Neural Network Basics",
+          "completed": false,
+          "content": [
+            {
+              "type": "image",
+              "title": "Neural Network Basics — Visual Overview",
+              "src": "https://lirp.cdn-website.com/de11e97c/dms3rep/multi/opt/AI+FOUNDATIONS-640w.png",
+              "caption": "Click the image once you've reviewed it to mark this step complete.",
+              "done": false
+            },
+            {
+              "type": "video",
+              "title": "Neural Network Basics — Video Walkthrough",
+              "src": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+              "caption": "Click / play the video to mark this step complete.",
+              "done": false
+            },
+            {
+              "type": "text",
+              "title": "Neural Network Basics — Reading",
+              "body": "<p>A neural network is layers of simple units (neurons). Each neuron multiplies its inputs by weights, adds a bias and passes the result through an activation function such as ReLU or sigmoid. Stacking layers lets the network learn complex patterns like faces or speech.</p><p class=\"fw-semibold mb-1\">Key points</p><ul class=\"mb-2\"><li>Input layer receives data, hidden layers transform it, output layer predicts.</li><li>Weights are the values learned during training.</li><li>Activation functions add non-linearity - without them the network is just a line.</li><li>Deeper networks can learn richer features but need more data.</li></ul><p class=\"mb-0\"><em>You have reached the end of this reading - great work!</em></p>",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Model Training",
+          "completed": false,
+          "content": [
+            {
+              "type": "image",
+              "title": "Model Training — Visual Overview",
+              "src": "https://lirp.cdn-website.com/de11e97c/dms3rep/multi/opt/AI+FOUNDATIONS-640w.png",
+              "caption": "Click the image once you've reviewed it to mark this step complete.",
+              "done": false
+            },
+            {
+              "type": "video",
+              "title": "Model Training — Video Walkthrough",
+              "src": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+              "caption": "Click / play the video to mark this step complete.",
+              "done": false
+            },
+            {
+              "type": "text",
+              "title": "Model Training — Reading",
+              "body": "<p>Training adjusts the weights to reduce error. The model makes a prediction, a loss function measures how wrong it was, and backpropagation works out how each weight should change. Data is split into training, validation and test sets so you can detect overfitting - when a model memorises instead of generalises.</p><p class=\"fw-semibold mb-1\">Key points</p><ul class=\"mb-2\"><li>Typical split: 70% train, 15% validation, 15% test.</li><li>Learning rate controls the step size of each update.</li><li>Overfitting: great training score, poor test score.</li><li>Regularisation and more data help reduce overfitting.</li></ul><p class=\"mb-0\"><em>You have reached the end of this reading - great work!</em></p>",
+              "done": false
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "name": "Capstone: Build a Classifier",
+          "completed": false,
+          "content": [
+            {
+              "type": "image",
+              "title": "Capstone: Build a Classifier — Visual Overview",
+              "src": "https://lirp.cdn-website.com/de11e97c/dms3rep/multi/opt/AI+FOUNDATIONS-640w.png",
+              "caption": "Click the image once you've reviewed it to mark this step complete.",
+              "done": false
+            },
+            {
+              "type": "video",
+              "title": "Capstone: Build a Classifier — Video Walkthrough",
+              "src": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+              "caption": "Click / play the video to mark this step complete.",
+              "done": false
+            },
+            {
+              "type": "text",
+              "title": "Capstone: Build a Classifier — Reading",
+              "body": "<p>For the capstone you build a simple classifier, for example one that labels flowers or spam emails. Load a dataset, clean it, split it, train a model, then evaluate accuracy and mistakes. Finish by writing a short note explaining what worked and what you would improve.</p><p class=\"fw-semibold mb-1\">Key points</p><ul class=\"mb-2\"><li>Start with a simple baseline model.</li><li>Use a confusion matrix to see which classes get mixed up.</li><li>Change one thing at a time when tuning.</li><li>Document your results so others can reproduce them.</li></ul><p class=\"mb-0\"><em>You have reached the end of this reading - great work!</em></p>",
+              "done": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
