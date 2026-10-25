@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import PageCss from "../components/PageCss";
 import LegacyScript from "../components/LegacyScript";
@@ -14,25 +15,25 @@ const FILTERS = [
     { key: "mobile", label: "Mobile" },
 ];
 
-const COURSES = [
-    { id: "python-masterclass", category: "web", badge: "Development", badgeClass: "primary", title: "Python Programming Masterclass", description: "Learn basics to building automation workflows and real-world scripting from scratch.", image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80", alt: "Python Masterclass" },
-    { id: "fullstack-dev", category: "web", badge: "Full Stack", badgeClass: "success", title: "Full Stack Web Development", description: "Master modern front-end layout styling, scalable backend architectures, and production databases.", image: "https://images.unsplash.com/photo-1547658719-da2b51169166?auto=format&fit=crop&w=600&q=80", alt: "Full Stack Dev" },
-    { id: "ai-foundations", category: "ai", badge: "Data Science", badgeClass: "info", title: "Artificial Intelligence Foundations", description: "Deep dive into multi-layered Neural Networks, pattern modeling, and linear automation engines.", image: "https://lirp.cdn-website.com/de11e97c/dms3rep/multi/opt/AI+FOUNDATIONS-640w.png", alt: "AI Foundations" },
-    { id: "gen-ai", category: "ai", badge: "Generative AI", badgeClass: "info", title: "Generative AI & Large Language Models", description: "Explore transformers architectures, structural fine-tuning parameters, prompt workflows, and context window logic.", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZ-HU7vvPiM9SBgEhJCRi48tQbm7P-bLf4Yr15IJkEuI0ugjDK8GiNi_E&s=10", alt: "Generative AI & LLMs" },
-    { id: "cyber-security", category: "security", badge: "Security", badgeClass: "danger", title: "Cyber Security & Ethical Hacking", description: "Understand digital architecture weaknesses, network defenses, and threat analysis frameworks.", image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=600&q=80", alt: "Cyber Security" },
-    { id: "data-analytics", category: "analytics", badge: "Analytics", badgeClass: "warning", title: "Data Science & Analytics BootCamp", description: "Transform raw enterprise variables into interactive visual matrices using Pandas and Tableau.", image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80", alt: "Data Analytics" },
-    { id: "cross-platform-mobile", category: "mobile", badge: "Mobile", badgeClass: "primary", title: "Cross-Platform App Development", description: "Build industry-grade intuitive workflows natively deployment-ready for iOS and Android stores.", image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=600&q=80", alt: "Mobile Development" },
-    { id: "advanced-mobile", category: "mobile", badge: "Mobile", badgeClass: "primary", title: "Advanced iOS & Android Architecture", description: "Optimize device performance matrix using asynchronous operations, lifecycle models, and reactive structures.", image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80", alt: "Mobile Development Native" },
-    { id: "reinforcement-learning", category: "ai", badge: "Artificial Intelligence", badgeClass: "info", title: "Deep Reinforcement Learning", description: "Master decision-making agents using Q-learning, policy gradients, and algorithmic actors.", image: "https://bs-uploads.toptal.io/blackfish-uploads/components/open_graph_image/8958314/og_image/optimized/deep-dive-into-reinforcement-learning-2393e08aa800a4247f6066eee9ba0e8d.png", alt: "Advanced AI" },
-    { id: "nlp", category: "ml", badge: "Machine Learning", badgeClass: "warning", title: "Natural Language Processing", description: "Construct parsing tokenizers, sequence generation loops, and transformer translation layers.", image: "https://miro.medium.com/1*tjyq7DrWkcK_rgym6YJ1Pw.png", alt: "Machine Learning NLP" },
-    { id: "mlops", category: "ml", badge: "Machine Learning", badgeClass: "warning", title: "Predictive Analytics & ML Ops", description: "Implement automation orchestration frameworks, continuous calibration steps, and pipeline monitoring tracking.", image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80", alt: "Predictive Analytics" },
-    { id: "devops", category: "web", badge: "DevOps", badgeClass: "success", title: "Cloud Native DevOps Engine", description: "Deploy production networks using micro-container clusters, orchestration logs, and pipelines.", image: "https://images.unsplash.com/photo-1600132806370-bf17e65e942f?auto=format&fit=crop&w=600&q=80", alt: "Cloud Architectures" },
-];
+const FILTER_CATEGORIES = {
+    ai: ["Artificial Intelligence"],
+    ml: ["Machine Learning"],
+    web: ["Programming", "Web Development", "DevOps"],
+    security: ["Security"],
+    analytics: ["Data Analytics"],
+    mobile: ["Mobile Development"],
+};
 
 export default function Courses() {
-    // courses.js exposes these on window (filterCategory, handleEnrollment, ...)
+    // courses.js exposes these on window (handleEnrollment, submitAdminAuth, ...)
     const call = (fn, ...args) => window[fn] && window[fn](...args);
     const { courses, loading, error } = useCourses();
+    const [activeFilter, setActiveFilter] = useState("all");
+
+    const visibleCourses =
+        activeFilter === "all"
+            ? courses
+            : courses.filter((c) => FILTER_CATEGORIES[activeFilter]?.includes(c.category));
 
     return (
         <>
@@ -86,37 +87,38 @@ export default function Courses() {
 
             <div className="container py-5">
                 <div className="d-flex justify-content-center gap-2 flex-wrap mb-5" id="filter-container">
-                    {FILTERS.map((f, i) => (
+                    {FILTERS.map((f) => (
                         <button
                             key={f.key}
-                            className={`btn ${i === 0 ? "btn-primary" : "btn-outline-primary"} filter-btn px-4`}
-                            onClick={(e) => call("filterCategory", f.key, e.currentTarget)}
+                            className={`btn ${activeFilter === f.key ? "btn-primary" : "btn-outline-primary"} filter-btn px-4`}
+                            onClick={() => setActiveFilter(f.key)}
                         >
                             {f.label}
                         </button>
                     ))}
                 </div>
 
-                <div className="container">
-    <h3 className="fw-bold mb-4">Courses from API</h3>
-    {loading && <p>Loading courses...</p>}
-    {error && <p className="text-danger">{error}</p>}
-    <div className="row g-4">
-        {!loading && !error && courses.map((course) => (
-            <div className="col-md-4" key={course.id}>
-                <CourseCard
-                    image={course.image}
-                    alt={course.courseName}
-                    title={course.courseName}
-                    description={course.overview}
-                    courseKey={course.id}
-                />
-            </div>
-        ))}
-    </div>
-</div>
+                {loading && <p className="text-center">Loading courses...</p>}
+                {error && <p className="text-center text-danger">{error}</p>}
+                {!loading && !error && visibleCourses.length === 0 && (
+                    <p className="text-center text-muted">No courses in this category.</p>
+                )}
 
-                
+                <div className="row g-4">
+                    {!loading && !error && visibleCourses.map((course) => (
+                        <div className="col-md-4" key={course.id}>
+                            <CourseCard
+                                image={course.image}
+                                alt={course.courseName}
+                                title={course.courseName}
+                                description={course.overview}
+                                courseKey={course.id}
+                                category={course.category}
+                                level={course.level}
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
 
             <div className="modal fade" id="adminAuthModal" tabIndex="-1" aria-hidden="true">

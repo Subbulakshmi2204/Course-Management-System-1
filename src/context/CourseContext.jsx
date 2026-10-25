@@ -11,8 +11,8 @@ export function CourseProvider({ children }) {
     async function fetchCourses() {
         try {
             setLoading(true);
-            const response = await api.get("/courses");
-            setCourses(response.data);
+            const response = await api.get("/api/v1/courses");
+            setCourses(response.data.data);
             setError(null);
         } catch (error) {
             console.error("Failed to fetch courses:", error);
@@ -27,17 +27,19 @@ export function CourseProvider({ children }) {
     }, []);
 
     async function addCourse(course) {
-        const response = await api.post("/courses", course);
-        setCourses((prev) => [...prev, response.data]);
+        const response = await api.post("/api/v1/courses", course);
+        setCourses((prev) => [...prev, response.data.data]);
+        return response.data.data;
     }
 
     async function updateCourse(id, updatedCourse) {
-        const response = await api.put(`/courses/${id}`, updatedCourse);
-        setCourses((prev) => prev.map((c) => (c.id === id ? response.data : c)));
+        const response = await api.put(`/api/v1/courses/${id}`, updatedCourse);
+        setCourses((prev) => prev.map((c) => (c.id === id ? response.data.data : c)));
+        return response.data.data;
     }
 
     async function deleteCourse(id) {
-        await api.delete(`/courses/${id}`);
+        await api.delete(`/api/v1/courses/${id}`);
         setCourses((prev) => prev.filter((c) => c.id !== id));
     }
 
