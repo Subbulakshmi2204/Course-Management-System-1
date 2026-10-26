@@ -49,6 +49,7 @@ export function AuthProvider({ children }) {
     }, [refresh]);
 
     function logout() {
+        sessionStorage.removeItem("token");  
         localStorage.removeItem(USER_KEY);
         localStorage.removeItem(SESSION_FLAG_KEY);
         if (window.handleLogout) {

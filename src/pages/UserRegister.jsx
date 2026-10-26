@@ -1,8 +1,105 @@
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import PageCss from "../components/PageCss";
-import LegacyScript from "../components/LegacyScript";
+import { registerStudent, loginStudent, getErrorMessage } from "../api/authApi";
+import { saveSession, getRedirectUrl } from "../auth/session";
+import { useAuth } from "../auth/AuthContext";
 
 export default function UserRegister() {
+    const { search } = useLocation();
+    const { refresh } = useAuth();
+
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        department: "",
+        password: "",
+        confirmPassword: "",
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [notice, setNotice] = useState(null);
+    const [loading, setLoading] = useState(false);
+    // null = still on the form, "signedIn" = account created and logged in,
+    // "created" = account created but the automatic sign-in failed.
+    const [success, setSuccess] = useState(null);
+    const redirectTimer = useRef(null);
+
+    const dashboardUrl = getRedirectUrl(search);
+
+    useEffect(() => () => clearTimeout(redirectTimer.current), []);
+
+    function handleChange(event) {
+        const { name, value } = event.target;
+        setFormData((previous) => ({ ...previous, [name]: value }));
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        setNotice(null);
+
+        const name = formData.name.trim();
+        const email = formData.email.trim();
+        const department = formData.department.trim();
+        const { password, confirmPassword } = formData;
+
+        // Same rules as the backend, so students get instant feedback.
+        let problem = null;
+        if (!name) problem = "Name is required.";
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problem = "Enter a valid email address.";
+        else if (!department) problem = "Department is required.";
+        else if (password.length < 8 || password.length > 72) problem = "Password must be between 8 and 72 characters.";
+        else if (password !== confirmPassword) problem = "Passwords do not match.";
+
+        if (problem) {
+            setNotice({ type: "danger", content: problem });
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            await registerStudent({ name, email, password, department });
+        } catch (err) {
+            if (err.response?.status === 409) {
+                setNotice({
+                    type: "warning",
+                    content: (
+                        <>
+                            An account already exists for <strong>{email}</strong>.{" "}
+                            <Link to={`/login${search}`} className="alert-link">Log in instead</Link>.
+                        </>
+                    ),
+                });
+            } else {
+                setNotice({
+                    type: "danger",
+                    content: getErrorMessage(err, "Registration failed. Please try again."),
+                });
+            }
+            setLoading(false);
+            return;
+        }
+
+        // Account exists now. Sign the student straight in, as the site did before.
+        try {
+            const result = await loginStudent({ email, password });
+            saveSession(result);
+            refresh();
+            setSuccess("signedIn");
+
+            // Full page load so the dashboard's legacy scripts see the new session.
+            redirectTimer.current = setTimeout(() => {
+                window.location.href = dashboardUrl;
+            }, 1200);
+        } catch {
+            setSuccess("created");
+        } finally {
+            setFormData((previous) => ({ ...previous, password: "", confirmPassword: "" }));
+            setLoading(false);
+        }
+    }
+
     return (
         <>
             <PageCss href="/css/login.css" />
@@ -51,18 +148,22 @@ export default function UserRegister() {
                                     CourseHub
                                 </h3>
                             </div>
-                            <div id="registerFormContainer">
+                            <div id="registerFormContainer" className={success ? "d-none" : undefined}>
                                 <h2 className="fw-bold text-dark-blue">Create Student Account</h2>
                                 <p className="text-muted mb-4">Sign up to start enrolling in courses.</p>
-                                <div id="registerAlert" className="alert d-none" role="alert"></div>
-                                <form id="registerForm">
+                                {notice && (
+                                    <div id="registerAlert" className={`alert alert-${notice.type}`} role="alert">
+                                        {notice.content}
+                                    </div>
+                                )}
+                                <form id="registerForm" onSubmit={handleSubmit}>
                                     <div className="mb-3">
                                         <label className="form-label fw-medium">Full Name</label>
                                         <div className="input-group custom-input-group">
                                             <span className="input-group-text bg-transparent">
                                                 <i className="bi bi-person"></i>
                                             </span>
-                                            <input type="text" id="nameInput" className="form-control" placeholder="Jane Doe" required />
+                                            <input type="text" id="nameInput" name="name" className="form-control" placeholder="Jane Doe" value={formData.name} onChange={handleChange} autoComplete="name" required />
                                         </div>
                                     </div>
                                     <div className="mb-3">
@@ -71,7 +172,16 @@ export default function UserRegister() {
                                             <span className="input-group-text bg-transparent">
                                                 <i className="bi bi-envelope"></i>
                                             </span>
-                                            <input type="email" id="emailInput" className="form-control" placeholder="you@example.com" required />
+                                            <input type="email" id="emailInput" name="email" className="form-control" placeholder="you@example.com" value={formData.email} onChange={handleChange} autoComplete="email" required />
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label fw-medium">Department</label>
+                                        <div className="input-group custom-input-group">
+                                            <span className="input-group-text bg-transparent">
+                                                <i className="bi bi-building"></i>
+                                            </span>
+                                            <input type="text" id="departmentInput" name="department" className="form-control" placeholder="Computer Science" value={formData.department} onChange={handleChange} required />
                                         </div>
                                     </div>
                                     <div className="mb-3">
@@ -80,9 +190,9 @@ export default function UserRegister() {
                                             <span className="input-group-text bg-transparent">
                                                 <i className="bi bi-lock"></i>
                                             </span>
-                                            <input type="password" id="regPassword" className="form-control pe-5" placeholder="Minimum 8 characters" minLength="8" required />
-                                            <button type="button" className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent" onClick={() => window.eval("toggleRegPassword('regPassword', 'eyeIcon1')")}>
-                                                <i className="bi bi-eye" id="eyeIcon1"></i>
+                                            <input type={showPassword ? "text" : "password"} id="regPassword" name="password" className="form-control pe-5" placeholder="Minimum 8 characters" minLength={8} maxLength={72} value={formData.password} onChange={handleChange} autoComplete="new-password" required />
+                                            <button type="button" className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent" onClick={() => setShowPassword((visible) => !visible)}>
+                                                <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`} id="eyeIcon1"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -92,9 +202,9 @@ export default function UserRegister() {
                                             <span className="input-group-text bg-transparent">
                                                 <i className="bi bi-lock-fill"></i>
                                             </span>
-                                            <input type="password" id="confirmPassword" className="form-control pe-5" placeholder="Repeat your password" required />
-                                            <button type="button" className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent" onClick={() => window.eval("toggleRegPassword('confirmPassword', 'eyeIcon2')")}>
-                                                <i className="bi bi-eye" id="eyeIcon2"></i>
+                                            <input type={showConfirm ? "text" : "password"} id="confirmPassword" name="confirmPassword" className="form-control pe-5" placeholder="Repeat your password" maxLength={72} value={formData.confirmPassword} onChange={handleChange} autoComplete="new-password" required />
+                                            <button type="button" className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent" onClick={() => setShowConfirm((visible) => !visible)}>
+                                                <i className={`bi ${showConfirm ? "bi-eye-slash" : "bi-eye"}`} id="eyeIcon2"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -102,12 +212,12 @@ export default function UserRegister() {
                                         <input className="form-check-input custom-checkbox" type="checkbox" id="terms" required />
                                         <label className="form-check-label text-muted small" htmlFor="terms">I agree to the Terms of Service and Privacy Policy.</label>
                                     </div>
-                                    <button type="submit" className="btn btn-primary w-100 btn-glow">Create Account</button>
+                                    <button type="submit" disabled={loading} className="btn btn-primary w-100 btn-glow">{loading ? "Creating account..." : "Create Account"}</button>
                                 </form>
                                 <div className="text-center mt-4">
                                     <p className="mb-0">
                                         Already have an account?
-                                        <Link to="/login" id="loginLink" className="text-primary-gradient text-decoration-none">
+                                        <Link to={`/login${search}`} id="loginLink" className="text-primary-gradient text-decoration-none">
                                             Sign In Here
                                         </Link>
                                     </p>
@@ -117,22 +227,31 @@ export default function UserRegister() {
                                     </Link>
                                 </div>
                             </div>
-                            <div id="registerSuccessContainer" className="d-none text-center">
+                            <div id="registerSuccessContainer" className={`${success ? "" : "d-none "}text-center`}>
                                 <div className="alert alert-success d-flex align-items-center justify-content-center gap-2 mb-4" role="alert">
                                     <i className="bi bi-check-circle-fill"></i>
-                                    Account created! Welcome to CourseHub.
+                                    {success === "created"
+                                        ? "Account created! Please log in to continue."
+                                        : "Account created! Welcome to CourseHub."}
                                 </div>
-                                <Link to="/student-dashboard" id="goToDashboardBtn" className="btn btn-warning w-100 shadow-md fw-semibold py-3 d-flex align-items-center justify-content-center gap-2 btn-glow text-dark">
-                                    <i className="bi bi-speedometer2"></i>
-                                    Student Dashboard
-                                    <i className="bi bi-arrow-right"></i>
-                                </Link>
+                                {success === "created" ? (
+                                    <Link to={`/login${search}`} id="goToDashboardBtn" className="btn btn-warning w-100 shadow-md fw-semibold py-3 d-flex align-items-center justify-content-center gap-2 btn-glow text-dark">
+                                        <i className="bi bi-box-arrow-in-right"></i>
+                                        Go to Login
+                                        <i className="bi bi-arrow-right"></i>
+                                    </Link>
+                                ) : (
+                                    <a href={dashboardUrl} id="goToDashboardBtn" className="btn btn-warning w-100 shadow-md fw-semibold py-3 d-flex align-items-center justify-content-center gap-2 btn-glow text-dark">
+                                        <i className="bi bi-speedometer2"></i>
+                                        Student Dashboard
+                                        <i className="bi bi-arrow-right"></i>
+                                    </a>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        <LegacyScript src="/legacy/js/register.js" />
         </>
     );
 }

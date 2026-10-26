@@ -175,6 +175,7 @@ export function loginByNameEmail(name, email) {
 }
 
 export function logout() {
+    sessionStorage.removeItem('token');
     localStorage.removeItem(SESSION_FLAG_KEY);
     localStorage.removeItem(USER_KEY);
     setStateUser(null);

@@ -1,8 +1,63 @@
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import PageCss from "../components/PageCss";
-import LegacyScript from "../components/LegacyScript";
+import { loginStudent, getErrorMessage } from "../api/authApi";
+import { saveSession, getRedirectUrl } from "../auth/session";
+import { useAuth } from "../auth/AuthContext";
 
 export default function UserLogin() {
+    const { search } = useLocation();
+    const { refresh } = useAuth();
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [notice, setNotice] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [loggedIn, setLoggedIn] = useState(false);
+    const redirectTimer = useRef(null);
+
+    const dashboardUrl = getRedirectUrl(search);
+
+    useEffect(() => () => clearTimeout(redirectTimer.current), []);
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+        setNotice(null);
+
+        if (!email.trim() || !password) {
+            setNotice({ type: "danger", text: "Please enter a valid email and password." });
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const result = await loginStudent({ email: email.trim(), password });
+
+            // Saves the JWT (sessionStorage) and the session the rest of the app reads.
+            saveSession(result);
+            refresh();
+
+            setPassword("");
+            setLoggedIn(true);
+
+            // Full page load (not a client-side route change) so the dashboard's
+            // legacy scripts start fresh and pick up the new session.
+            redirectTimer.current = setTimeout(() => {
+                window.location.href = dashboardUrl;
+            }, 1200);
+        } catch (err) {
+            setNotice({
+                type: "danger",
+                text: getErrorMessage(err, "Login failed. Please try again."),
+                showRegisterLink: err.response?.status === 401,
+            });
+        } finally {
+            setLoading(false);
+        }
+    }
+
     return (
         <>
             <PageCss href="/css/login.css" />
@@ -66,22 +121,33 @@ export default function UserLogin() {
                                 </Link>
                             </div>
                             <div className="text-center text-lg-start mb-4">
-                                <h2 className="fw-bold text-dark-blue mb-1" id="loginHeader">Welcome Back</h2>
-                                <p className="text-muted small" id="loginSubheader">Please verify your digital student credentials below.</p>
+                                <h2 className="fw-bold text-dark-blue mb-1" id="loginHeader">{loggedIn ? "Session Initialized" : "Welcome Back"}</h2>
+                                <p className="text-muted small" id="loginSubheader">{loggedIn ? "Your digital student profile is verified." : "Please verify your digital student credentials below."}</p>
                             </div>
-                            <div id="dashboardContainer" className="d-none text-center">
+                            <div id="dashboardContainer" className={`${loggedIn ? "" : "d-none "}text-center`}>
                                 <div className="alert alert-success d-flex align-items-center justify-content-center gap-2 mb-4" role="alert">
                                     <i className="bi bi-check-circle-fill"></i>
                                     Login Successful! Welcome back.
                                 </div>
-                                <Link to="/student-dashboard" id="goToDashboardBtn" className="btn btn-warning w-100 shadow-md fw-semibold py-3 d-flex align-items-center justify-content-center gap-2 btn-glow text-dark">
+                                <a href={dashboardUrl} id="goToDashboardBtn" className="btn btn-warning w-100 shadow-md fw-semibold py-3 d-flex align-items-center justify-content-center gap-2 btn-glow text-dark">
                                     <i className="bi bi-speedometer2"></i>
                                     Student Dashboard
                                     <i className="bi bi-arrow-right"></i>
-                                </Link>
+                                </a>
                             </div>
-                            <div id="loginFormContainer">
-                                <div id="loginAlert" className="alert d-none" role="alert"></div>
+                            <div id="loginFormContainer" className={loggedIn ? "d-none" : undefined}>
+                                {notice && (
+                                    <div id="loginAlert" className={`alert alert-${notice.type}`} role="alert">
+                                        {notice.text}
+                                        {notice.showRegisterLink && (
+                                            <>
+                                                {" "}
+                                                <Link to={`/register${search}`} className="alert-link">Create an account</Link>
+                                                {" "}if you don't have one yet.
+                                            </>
+                                        )}
+                                    </div>
+                                )}
                                 <div className="row g-2 mb-4">
                                     <div className="col-6">
                                         <button className="btn btn-social w-100 d-inline-flex align-items-center justify-content-center gap-2">
@@ -100,14 +166,14 @@ export default function UserLogin() {
                                     <span className="bg-white px-3 text-muted small position-relative z-1">Or sign in with email</span>
                                     <div className="w-100 position-absolute border-top border-gray-200"></div>
                                 </div>
-                                <form id="loginForm">
+                                <form id="loginForm" onSubmit={handleSubmit}>
                                     <div className="mb-3">
                                         <label className="form-label text-dark-blue fw-medium small">Email Address</label>
                                         <div className="input-group custom-input-group">
                                             <span className="input-group-text bg-transparent border-end-0 text-muted">
                                                 <i className="bi bi-envelope"></i>
                                             </span>
-                                            <input type="email" id="emailInput" className="form-control border-start-0 ps-0" placeholder="name@example.com" required />
+                                            <input type="email" id="emailInput" className="form-control border-start-0 ps-0" placeholder="name@example.com" value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" required />
                                         </div>
                                     </div>
                                     <div className="mb-3">
@@ -121,9 +187,9 @@ export default function UserLogin() {
                                             <span className="input-group-text bg-transparent border-end-0 text-muted">
                                                 <i className="bi bi-lock"></i>
                                             </span>
-                                            <input type="password" id="passwordInput" className="form-control border-start-0 ps-0 pe-5" placeholder="••••••••" required />
-                                            <button type="button" className="btn position-absolute end-0 top-50 translate-middle-y text-muted border-0 bg-transparent z-3" onClick={() => window.eval("togglePasswordVisibility()")}>
-                                                <i className="bi bi-eye" id="passwordToggleIcon"></i>
+                                            <input type={showPassword ? "text" : "password"} id="passwordInput" className="form-control border-start-0 ps-0 pe-5" placeholder="••••••••" value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="current-password" maxLength={72} required />
+                                            <button type="button" className="btn position-absolute end-0 top-50 translate-middle-y text-muted border-0 bg-transparent z-3" onClick={() => setShowPassword((visible) => !visible)}>
+                                                <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`} id="passwordToggleIcon"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -131,15 +197,15 @@ export default function UserLogin() {
                                         <input className="form-check-input mt-0 custom-checkbox" type="checkbox" id="rememberMe" />
                                         <label className="form-check-label text-muted small select-none" htmlFor="rememberMe">Keep me signed in on this device</label>
                                     </div>
-                                    <button type="submit" className="btn btn-primary w-100 shadow-md fw-semibold mb-3 d-flex align-items-center justify-content-center gap-2 btn-glow">
-                                        Sign In to Dashboard
+                                    <button type="submit" disabled={loading} className="btn btn-primary w-100 shadow-md fw-semibold mb-3 d-flex align-items-center justify-content-center gap-2 btn-glow">
+                                        {loading ? "Signing in..." : "Sign In to Dashboard"}
                                         <i className="bi bi-arrow-right"></i>
                                     </button>
                                 </form>
                                 <div className="text-center mt-4">
                                     <p className="text-muted small mb-3">
                                         Don't have an account yet?
-                                        <Link to="/register" id="createAccountLink" className="fw-semibold text-decoration-none text-primary-gradient">
+                                        <Link to={`/register${search}`} id="createAccountLink" className="fw-semibold text-decoration-none text-primary-gradient">
                                             Create an Account
                                         </Link>
                                     </p>
@@ -153,7 +219,6 @@ export default function UserLogin() {
                     </div>
                 </div>
             </div>
-        <LegacyScript src="/legacy/js/login.js" />
         </>
     );
 }

@@ -1,11 +1,13 @@
-const express = require("express");
-const cors = require("cors");
+// Load environment variables FIRST (JWT_SECRET, PORT, ...) before anything uses them.
 const dotenv = require("dotenv");
-const morgan = require("morgan");
-
 dotenv.config();
 
+const express = require("express");
+const cors = require("cors");
+const morgan = require("morgan");
+
 const courseRoutes = require("./routes/courseRoutes");
+const authRoutes = require("./routes/authRoutes");
 const legacyRoutes = require("./routes/legacyRoutes");
 const notFound = require("./middleware/notFoundMiddleware");
 const errorHandler = require("./middleware/errorMiddleware");
@@ -29,11 +31,18 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.use("/api/v1/courses", courseRoutes);
-app.use("/", legacyRoutes); // keeps /students and /enrollments working
+// Task 9 + 10: authentication (register / login -> JWT)
+app.use("/api/v1/auth", authRoutes);
 
-app.use(notFound);      // must stay last
-app.use(errorHandler);  // must stay last
+// Course CRUD: GET is public, POST/PUT/DELETE need a JWT (see courseRoutes.js)
+app.use("/api/v1/courses", courseRoutes);
+
+// Older routes: keeps /students and /enrollments working
+app.use("/", legacyRoutes);
+
+// These two MUST stay last, after every route above.
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
