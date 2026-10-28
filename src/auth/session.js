@@ -12,6 +12,7 @@
  */
 
 const TOKEN_KEY = "token";
+const ROLE_KEY = "role";
 const USER_KEY = "courseHub_currentUser";
 const SESSION_FLAG_KEY = "courseHub_userLoggedIn";
 const USERS_KEY = "courseHub_users";
@@ -28,6 +29,10 @@ function readJSON(key, fallback) {
 /** Call with the response body of POST /auth/login. */
 export function saveSession({ token, student }) {
     sessionStorage.setItem(TOKEN_KEY, token);
+
+    // Task 11 / Activity 6: remember the role so the UI can show/hide
+    // admin-only buttons. This is for display only - the backend enforces it.
+    sessionStorage.setItem(ROLE_KEY, student.role || "student");
 
     const sessionUser = {
         id: student.id,
@@ -48,6 +53,14 @@ export function saveSession({ token, student }) {
     );
     users.push(sessionUser);
     localStorage.setItem(USERS_KEY, JSON.stringify(users));
+}
+
+/** Clears the JWT, the role and the legacy session (used by every logout). */
+export function clearSession() {
+    sessionStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(ROLE_KEY);
+    localStorage.removeItem(USER_KEY);
+    localStorage.removeItem(SESSION_FLAG_KEY);
 }
 
 /**

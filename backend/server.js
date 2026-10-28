@@ -1,4 +1,4 @@
-// Load environment variables FIRST (JWT_SECRET, PORT, ...) before anything uses them.
+// Load environment variables FIRST (JWT_SECRET, MONGO_URI, PORT, ...) before anything uses them.
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -6,9 +6,11 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 
+const connectDB = require("./config/mongo");
 const courseRoutes = require("./routes/courseRoutes");
 const authRoutes = require("./routes/authRoutes");
-const legacyRoutes = require("./routes/legacyRoutes");
+const enrollmentRoutes = require("./routes/enrollmentRoutes");
+const learningProgressRoutes = require("./routes/learningProgressRoutes");
 const notFound = require("./middleware/notFoundMiddleware");
 const errorHandler = require("./middleware/errorMiddleware");
 
@@ -31,18 +33,29 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// Task 9 + 10: authentication (register / login -> JWT)
+// Task 9 + 10: authentication (register / login -> JWT with role)
 app.use("/api/v1/auth", authRoutes);
 
-// Course CRUD: GET is public, POST/PUT/DELETE need a JWT (see courseRoutes.js)
+// Course CRUD: GET is public, POST/PUT/DELETE are admin-only (see courseRoutes.js)
 app.use("/api/v1/courses", courseRoutes);
 
-// Older routes: keeps /students and /enrollments working
-app.use("/", legacyRoutes);
+// Task 12: student enrollment (student-only)
+app.use("/api/v1/enrollments", enrollmentRoutes);
+
+// Task 13: learning progress (student-only)
+app.use("/api/v1/progress", learningProgressRoutes);
 
 // These two MUST stay last, after every route above.
 app.use(notFound);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+  })
+  .catch((error) => {
+    console.error("Could not start server:", error.message);
+    process.exit(1);
+  });

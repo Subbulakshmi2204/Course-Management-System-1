@@ -1,7 +1,9 @@
 const jwt = require("jsonwebtoken");
 
 // Verifies the "Authorization: Bearer <token>" header and puts the
-// logged-in student on req.user. Use it on routes that need a login.
+// logged-in user on req.user:
+//   req.user.sub  = user id (JWT subject)  - used by enrollment/progress
+//   req.user.role = "student" | "admin"    - used by authorizeRoles()
 function authenticateToken(req, res, next) {
   const authHeader = req.headers.authorization;
 
@@ -30,7 +32,9 @@ function authenticateToken(req, res, next) {
 
     req.user = {
       id: decoded.sub,
+      sub: decoded.sub,
       email: decoded.email,
+      role: decoded.role,
     };
 
     next();

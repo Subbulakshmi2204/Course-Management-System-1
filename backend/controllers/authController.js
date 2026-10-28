@@ -24,11 +24,18 @@ async function login(req, res, next) {
 
     const expiresIn = process.env.JWT_EXPIRES_IN || "1h";
 
-    // Only non-sensitive data goes in the token (JWTs are signed, not encrypted).
-    const token = jwt.sign({ email: student.email }, process.env.JWT_SECRET, {
-      subject: String(student.id),
-      expiresIn: expiresIn,
-    });
+    // The role comes from the account stored in MongoDB - never from req.body.
+    const token = jwt.sign(
+      {
+        email: student.email,
+        role: student.role,
+      },
+      process.env.JWT_SECRET,
+      {
+        subject: String(student.id),
+        expiresIn: expiresIn,
+      }
+    );
 
     return res.status(200).json({
       message: "Login successful",

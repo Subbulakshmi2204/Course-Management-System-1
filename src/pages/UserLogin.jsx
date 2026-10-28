@@ -44,8 +44,9 @@ export default function UserLogin() {
 
             // Full page load (not a client-side route change) so the dashboard's
             // legacy scripts start fresh and pick up the new session.
+            const nextUrl = result.student?.role === "admin" ? "/admin-dashboard" : dashboardUrl;
             redirectTimer.current = setTimeout(() => {
-                window.location.href = dashboardUrl;
+                window.location.href = nextUrl;
             }, 1200);
         } catch (err) {
             setNotice({

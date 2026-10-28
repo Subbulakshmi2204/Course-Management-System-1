@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { clearSession } from "../auth/session";
 
 /**
  * Shared logged-in-student navbar. Only used by pages that were rebuilt as
@@ -44,6 +45,20 @@ function Navbar({ variant = "student" }) {
                                 </NavLink>
                             </li>
                         )}
+                        {sessionStorage.getItem("role") === "student" && (
+                            <>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" to="/my-courses">
+                                        My Courses
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <NavLink className="nav-link" to="/my-learning-progress">
+                                        Learning Progress
+                                    </NavLink>
+                                </li>
+                            </>
+                        )}
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/notifications">
                                 Notifications
@@ -56,6 +71,8 @@ function Navbar({ variant = "student" }) {
                         type="button"
                         className="btn btn-outline-danger btn-sm rounded-pill px-3"
                         onClick={() => {
+                            // Always clear the JWT + role, even if the legacy helper isn't loaded.
+                            clearSession();
                             if (window.handleLogout) {
                                 window.handleLogout("/user-login.html");
                             } else {

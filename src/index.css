@@ -9,3 +9,23 @@ body,
     padding: 0;
     min-height: 100%;
 }
+/* Task 13 / Activity 9: learning progress summary cards */
+.summary-card {
+    flex: 1;
+    min-width: 160px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-align: center;
+    background-color: #f8fafc;
+}
+
+.summary-card h3 {
+    font-size: 15px;
+    color: #475569;
+}
+
+.summary-card h2 {
+    font-size: 28px;
+    color: #2563eb;
+}

@@ -1,34 +1,44 @@
-const { readDB, writeDB } = require("../config/db");
+const mongoose = require("mongoose");
+const Course = require("../models/Course");
+const Enrollment = require("../models/Enrollment");
+const LearningProgress = require("../models/LearningProgress");
 
-const getAllCourses = () => readDB().courses;
+const FIELDS = [
+  "courseName", "courseCode", "instructor", "duration", "level", "category",
+  "image", "overview", "learningOutcomes", "modules", "status",
+];
 
-const getCourseById = (id) => readDB().courses.find((c) => c.id === id);
+const pick = (data) =>
+  Object.fromEntries(FIELDS.filter((f) => data[f] !== undefined).map((f) => [f, data[f]]));
 
-const createCourse = (courseData) => {
-  const db = readDB();
-  const course = { ...courseData, id: courseData.id || `course-${Date.now()}` };
-  if (db.courses.some((c) => c.id === course.id)) return null; // duplicate id
-  db.courses.push(course);
-  writeDB(db);
-  return course;
+const slugify = (text) =>
+  String(text).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+
+// A course can be addressed by its MongoDB _id OR its readable slug.
+const keyFilter = (key) =>
+  mongoose.isValidObjectId(key) ? { $or: [{ _id: key }, { slug: key }] } : { slug: key };
+
+const getAllCourses = () => Course.find().sort({ _id: 1 });
+
+const getCourseByKey = (key) => Course.findOne(keyFilter(key));
+
+// Returns null when the slug already exists.
+const createCourse = async (data) => {
+  const slug = slugify(data.id || data.slug || data.courseName) || `course-${Date.now()}`;
+  if (await Course.exists({ slug })) return null;
+  return Course.create({ ...pick(data), slug });
 };
 
-const updateCourse = (id, courseData) => {
-  const db = readDB();
-  const index = db.courses.findIndex((c) => c.id === id);
-  if (index === -1) return null;
-  db.courses[index] = { ...db.courses[index], ...courseData, id };
-  writeDB(db);
-  return db.courses[index];
-};
+const updateCourse = (key, data) =>
+  Course.findOneAndUpdate(keyFilter(key), pick(data), { new: true, runValidators: true });
 
-const deleteCourse = (id) => {
-  const db = readDB();
-  const before = db.courses.length;
-  db.courses = db.courses.filter((c) => c.id !== id);
-  if (db.courses.length === before) return false;
-  writeDB(db);
+const deleteCourse = async (key) => {
+  const course = await Course.findOneAndDelete(keyFilter(key));
+  if (!course) return false;
+  // Remove records that point to the deleted course.
+  await Enrollment.deleteMany({ course: course._id });
+  await LearningProgress.deleteMany({ course: course._id });
   return true;
 };
 
-module.exports = { getAllCourses, getCourseById, createCourse, updateCourse, deleteCourse };
+module.exports = { getAllCourses, getCourseByKey, createCourse, updateCourse, deleteCourse };

@@ -1,8 +1,20 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { clearSession } from "../auth/session";
 import PageCss from "../components/PageCss";
 import LegacyScript from "../components/LegacyScript";
 
 export default function AdminDashboard() {
+    const navigate = useNavigate();
+    const isAdmin = sessionStorage.getItem("role") === "admin" && !!sessionStorage.getItem("token");
+
+    // UI guard only - the backend still protects every admin API with authorizeRoles("admin").
+    useEffect(() => {
+        if (!isAdmin) navigate("/admin-login", { replace: true });
+    }, [isAdmin, navigate]);
+
+    if (!isAdmin) return null;
+
     return (
         <>
             <PageCss href="/css/admin-dashboard.css" />
@@ -19,7 +31,7 @@ export default function AdminDashboard() {
                                 <i className="bi bi-circle-fill me-1" style={{fontSize: "7px"}}></i>
                                 System Online
                             </span>
-                            <Link to="/" className="btn btn-outline-danger rounded-pill px-4">
+                            <Link to="/" onClick={clearSession} className="btn btn-outline-danger rounded-pill px-4">
                                 <i className="bi bi-box-arrow-right me-1"></i>
                                 Logout
                             </Link>

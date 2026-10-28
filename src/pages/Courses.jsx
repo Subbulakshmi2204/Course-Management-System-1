@@ -4,6 +4,8 @@ import PageCss from "../components/PageCss";
 import LegacyScript from "../components/LegacyScript";
 import { useCourses } from "../context/CourseContext";
 import CourseCard from "../components/CourseCard";
+import CourseForm from "../components/CourseForm";
+import apiClient from "../api/apiClient";
 
 const FILTERS = [
     { key: "all", label: "All" },
@@ -27,8 +29,55 @@ const FILTER_CATEGORIES = {
 export default function Courses() {
     // courses.js exposes these on window (handleEnrollment, submitAdminAuth, ...)
     const call = (fn, ...args) => window[fn] && window[fn](...args);
-    const { courses, loading, error } = useCourses();
+    const { courses, loading, error, addCourse, updateCourse, deleteCourse } = useCourses();
     const [activeFilter, setActiveFilter] = useState("all");
+
+    // Role saved at login (sessionStorage). Only controls what is SHOWN;
+    // the backend still enforces permissions on every request.
+    const role = sessionStorage.getItem("role");
+    const isAdmin = role === "admin";
+    const isStudent = role === "student";
+
+    // null = form closed, {} = add, course object = edit
+    const [formCourse, setFormCourse] = useState(null);
+
+    const apiMessage = (err, fallback) => err.response?.data?.message || fallback;
+
+    // Task 12 / Activity 6
+    const handleEnroll = async (courseId) => {
+        try {
+            const response = await apiClient.post("/enrollments", { courseId });
+            alert(response.data.message || "Enrollment successful!");
+        } catch (err) {
+            alert(apiMessage(err, "Unable to enroll in this course"));
+        }
+    };
+
+    // Task 11 / Activity 6
+    const handleAddCourse = () => setFormCourse({});
+    const handleEdit = (courseId) => setFormCourse(courses.find((c) => c.id === courseId) || null);
+
+    const handleDelete = async (courseId) => {
+        if (!window.confirm("Delete this course permanently?")) return;
+        try {
+            await deleteCourse(courseId);
+        } catch (err) {
+            alert(apiMessage(err, "Unable to delete this course"));
+        }
+    };
+
+    const handleSaveCourse = async (values) => {
+        try {
+            if (formCourse?.id) {
+                await updateCourse(formCourse.id, values);
+            } else {
+                await addCourse(values);
+            }
+            setFormCourse(null);
+        } catch (err) {
+            alert(apiMessage(err, "Unable to save this course"));
+        }
+    };
 
     const visibleCourses =
         activeFilter === "all"
@@ -98,6 +147,24 @@ export default function Courses() {
                     ))}
                 </div>
 
+                {isAdmin && (
+                    <div className="mb-4">
+                        {!formCourse && (
+                            <button className="btn btn-primary" onClick={handleAddCourse}>
+                                Add Course
+                            </button>
+                        )}
+                        {formCourse && (
+                            <CourseForm
+                                key={formCourse.id || "new"}
+                                course={formCourse.id ? formCourse : null}
+                                onSubmit={handleSaveCourse}
+                                onCancel={() => setFormCourse(null)}
+                            />
+                        )}
+                    </div>
+                )}
+
                 {loading && <p className="text-center">Loading courses...</p>}
                 {error && <p className="text-center text-danger">{error}</p>}
                 {!loading && !error && visibleCourses.length === 0 && (
@@ -115,6 +182,11 @@ export default function Courses() {
                                 courseKey={course.id}
                                 category={course.category}
                                 level={course.level}
+                                isStudent={isStudent}
+                                isAdmin={isAdmin}
+                                onEnrollNow={() => handleEnroll(course._id)}
+                                onEdit={handleEdit}
+                                onDelete={handleDelete}
                             />
                         </div>
                     ))}

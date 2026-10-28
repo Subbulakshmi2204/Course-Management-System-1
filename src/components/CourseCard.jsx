@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 
-function CourseCard({ image, alt, title, description, courseKey, category, level }) {
+function CourseCard({
+    image, alt, title, description, courseKey, category, level,
+    isStudent = false, isAdmin = false, onEnrollNow, onEdit, onDelete,
+}) {
     return (
         <div className="card h-100 shadow-sm border-0 custom-card">
             <div className="course-img-container">
@@ -29,6 +32,31 @@ function CourseCard({ image, alt, title, description, courseKey, category, level
                             Enroll
                         </button>
                     </div>
+
+                    {/* Task 12 / Activity 6: backend enrolment - students only (UI hint; API enforces it). */}
+                    {isStudent && (
+                        <div className="col-12">
+                            <button className="btn btn-success w-100 btn-sm py-2" onClick={() => onEnrollNow?.(courseKey)}>
+                                Enroll Now
+                            </button>
+                        </div>
+                    )}
+
+                    {/* Task 11 / Activity 6: course management - admins only (UI hint; API enforces it). */}
+                    {isAdmin && (
+                        <>
+                            <div className="col-6">
+                                <button className="btn btn-outline-secondary w-100 btn-sm py-2" onClick={() => onEdit?.(courseKey)}>
+                                    Edit
+                                </button>
+                            </div>
+                            <div className="col-6">
+                                <button className="btn btn-outline-danger w-100 btn-sm py-2" onClick={() => onDelete?.(courseKey)}>
+                                    Delete
+                                </button>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

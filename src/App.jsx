@@ -13,6 +13,10 @@ import EditCourse from "./pages/EditCourse";
 import CourseContent from "./pages/CourseContent";
 import Notifications from "./pages/Notifications";
 import Progress from "./pages/Progress";
+import MyCourses from "./components/MyCourses";
+import MyLearningProgress from "./components/MyLearningProgress";
+import PageShell from "./components/PageShell";
+import RequireRole from "./auth/RequireRole";
 
 // Single reusable course player component
 import CoursePlayer from "./pages/CoursePlayer";
@@ -53,6 +57,28 @@ export default function App() {
             <Route path="/notifications.html" element={<Notifications />} />
             <Route path="/progress" element={<Progress />} />
             <Route path="/progress.html" element={<Progress />} />
+
+            {/* Tasks 12-13: student-only pages (backed by /api/v1/enrollments and /api/v1/progress) */}
+            <Route
+                path="/my-courses"
+                element={
+                    <RequireRole role="student">
+                        <PageShell variant="student3">
+                            <div className="container py-4"><MyCourses /></div>
+                        </PageShell>
+                    </RequireRole>
+                }
+            />
+            <Route
+                path="/my-learning-progress"
+                element={
+                    <RequireRole role="student">
+                        <PageShell variant="student3">
+                            <div className="container py-4"><MyLearningProgress /></div>
+                        </PageShell>
+                    </RequireRole>
+                }
+            />
 
             {/* UNIFIED DYNAMIC COURSE ROUTE */}
             <Route path="/course/:courseKey" element={<CoursePlayer />} />

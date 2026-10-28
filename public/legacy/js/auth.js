@@ -16,27 +16,20 @@
 import { setCurrentUser as setStateUser, getCurrentUser as getStateUser, setSelectedCourse } from './state.js';
 
 // ---- Backend mirror ------------------------------------------------------
-// Every change is still saved in localStorage exactly as before; it is ALSO
-// sent to the Express backend so it shows up in backend/data/db.json.
-// If the backend is not running, the app keeps working normally.
-const BACKEND_URL = 'http://localhost:4000';
-
-export function mirrorToBackend(method, path, body) {
-    try {
-        const options = { method, headers: { 'Content-Type': 'application/json' }, keepalive: true };
-        if (body !== undefined) options.body = JSON.stringify(body);
-        // keepalive requests are limited to ~64KB
-        if (options.body && options.body.length > 60000) delete options.keepalive;
-        return fetch(BACKEND_URL + path, options).catch(() => null);
-    } catch (e) {
-        return Promise.resolve(null);
-    }
+// The backend now stores everything in MongoDB only (users, courses, enrollments,
+// progress) and the old unauthenticated /students and /enrollments JSON-file routes
+// were removed. These helpers are kept as harmless no-ops so the older pages that
+// call them keep working from localStorage.
+export function mirrorToBackend() {
+    return Promise.resolve(null);
 }
 
 /** Copies anything that exists in localStorage but not yet in the backend
  *  (students and enrollments created before the backend was connected, or
  *  while it was offline). Runs on every page load; only missing items are sent. */
 async function syncLocalToBackend() {
+    return; // disabled: no legacy backend routes any more (MongoDB only)
+    // eslint-disable-next-line no-unreachable
     if (window.__courseHubSyncing) return;
     window.__courseHubSyncing = true;
     try {
@@ -68,9 +61,6 @@ async function syncLocalToBackend() {
 const USERS_KEY = 'courseHub_users';
 const USER_KEY = 'courseHub_currentUser';
 const SESSION_FLAG_KEY = 'courseHub_userLoggedIn';
-
-const ADMIN_EMAIL = 'admin@coursehub.com';
-const ADMIN_PASSWORD = 'admin123';
 
 function readJSON(key, fallback) {
     try {
@@ -176,6 +166,7 @@ export function loginByNameEmail(name, email) {
 
 export function logout() {
     sessionStorage.removeItem('token');
+    sessionStorage.removeItem('role');
     localStorage.removeItem(SESSION_FLAG_KEY);
     localStorage.removeItem(USER_KEY);
     setStateUser(null);
@@ -194,11 +185,8 @@ export function isLoggedIn() {
     return localStorage.getItem(SESSION_FLAG_KEY) === 'true' && !!getCurrentUser();
 }
 
-/** Separate credential check for the admin console — kept out of the
- *  student accounts table on purpose. */
-export function loginAdmin(email, password) {
-    return String(email).trim().toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD;
-}
+/** Admin login now goes through the backend (POST /api/v1/auth/login) and the
+ *  JWT role - see admin-login.js. The old hard-coded browser password is gone. */
 
 initializeAuthStorage();
 syncLocalToBackend();

@@ -17,6 +17,14 @@ export default function StudentDashboard() {
                     </button>
                     <div className="collapse navbar-collapse justify-content-end" id="navbarNav">
                         <div className="d-flex align-items-center gap-3 mt-3 mt-lg-0">
+                            <Link to="/my-courses" className="text-decoration-none text-dark fw-medium small">
+                                <i className="bi bi-journal-check me-1 text-primary"></i>
+                                My Courses
+                            </Link>
+                            <Link to="/my-learning-progress" className="text-decoration-none text-dark fw-medium small">
+                                <i className="bi bi-graph-up-arrow me-1 text-primary"></i>
+                                Learning Progress
+                            </Link>
                             <Link to="/progress" className="text-decoration-none text-dark fw-medium small">
                                 <i className="bi bi-bar-chart-line-fill me-1 text-primary"></i>
                                 My Progress
