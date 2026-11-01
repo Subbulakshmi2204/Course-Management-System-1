@@ -50,7 +50,7 @@ async function registerStudent({ name, email, password, department }) {
 async function loginStudent({ email, password }) {
   const normalizedEmail = email.trim().toLowerCase();
 
-  const user = await User.findOne({ email: normalizedEmail });
+  const user = await User.findOne({ email: normalizedEmail }).select("+password");
 
   // Same message for "no such email" and "wrong password".
   if (!user) {

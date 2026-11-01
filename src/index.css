@@ -2,6 +2,12 @@
     box-sizing: border-box;
 }
 
+/* Make the whole site a little smaller. Bootstrap sizes are in rem,
+   so 87.5% (= 14px base instead of 16px) scales text, buttons and spacing evenly. */
+html {
+    font-size: 87.5%;
+}
+
 html,
 body,
 #root {

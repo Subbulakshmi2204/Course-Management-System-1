@@ -25,6 +25,12 @@ export default function StudentDashboard() {
                                 <i className="bi bi-graph-up-arrow me-1 text-primary"></i>
                                 Learning Progress
                             </Link>
+                            <Link to="/chat" className="text-decoration-none text-dark fw-medium small">
+                                Chat
+                            </Link>
+                            <Link to="/profile" className="text-decoration-none text-dark fw-medium small">
+                                Profile
+                            </Link>
                             <Link to="/progress" className="text-decoration-none text-dark fw-medium small">
                                 <i className="bi bi-bar-chart-line-fill me-1 text-primary"></i>
                                 My Progress

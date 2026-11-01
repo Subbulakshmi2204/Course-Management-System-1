@@ -2,6 +2,10 @@ import { Link } from "react-router-dom";
 import PageCss from "../components/PageCss";
 import LegacyScript from "../components/LegacyScript";
 
+// The legacy admin-login.js is a plain script (Vite cannot inject env vars into it),
+// so hand it the API URL here before it loads.
+window.__API_URL__ = import.meta.env.VITE_API_URL || "http://localhost:4000/api/v1";
+
 export default function AdminLogin() {
     return (
         <>

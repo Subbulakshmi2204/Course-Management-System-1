@@ -17,6 +17,10 @@ import MyCourses from "./components/MyCourses";
 import MyLearningProgress from "./components/MyLearningProgress";
 import PageShell from "./components/PageShell";
 import RequireRole from "./auth/RequireRole";
+import RequireAuth from "./auth/RequireAuth";
+import Chat from "./components/Chat";
+import Profile from "./components/Profile";
+import AdminStudents from "./components/AdminStudents";
 
 // Single reusable course player component
 import CoursePlayer from "./pages/CoursePlayer";
@@ -75,6 +79,38 @@ export default function App() {
                     <RequireRole role="student">
                         <PageShell variant="student3">
                             <div className="container py-4"><MyLearningProgress /></div>
+                        </PageShell>
+                    </RequireRole>
+                }
+            />
+
+            {/* Tasks 9, 12, 13: profile, chat, admin student management */}
+            <Route
+                path="/profile"
+                element={
+                    <RequireAuth>
+                        <PageShell variant="student3">
+                            <div className="container py-4"><Profile /></div>
+                        </PageShell>
+                    </RequireAuth>
+                }
+            />
+            <Route
+                path="/chat"
+                element={
+                    <RequireAuth>
+                        <PageShell variant="student3">
+                            <div className="container py-4"><Chat /></div>
+                        </PageShell>
+                    </RequireAuth>
+                }
+            />
+            <Route
+                path="/admin-students"
+                element={
+                    <RequireRole role="admin" redirectTo="/admin-login">
+                        <PageShell variant="student3">
+                            <div className="container py-4"><AdminStudents /></div>
                         </PageShell>
                     </RequireRole>
                 }

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import PageCss from "../components/PageCss";
 import LegacyScript from "../components/LegacyScript";
+import LiveNotifications from "../components/LiveNotifications";
 
 export default function Notifications() {
     return (
@@ -84,6 +85,7 @@ export default function Notifications() {
                     <p className="text-white-50 mb-0">New courses, enrollment confirmations, and certificates — all in one place.</p>
                 </div>
             </div>
+            <LiveNotifications />
             {/* Shown when nobody is logged in */}
             <div className="container py-5" id="loggedOutBody" style={{display: "none"}}>
                 <div className="mx-auto text-center py-5" style={{maxWidth: "460px"}}>

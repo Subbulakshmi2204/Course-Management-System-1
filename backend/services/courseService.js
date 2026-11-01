@@ -20,6 +20,14 @@ const keyFilter = (key) =>
 
 const getAllCourses = () => Course.find().sort({ _id: 1 });
 
+const getCoursesPage = async (page, limit) => {
+  const [courses, total] = await Promise.all([
+    Course.find().sort({ _id: 1 }).skip((page - 1) * limit).limit(limit),
+    Course.countDocuments(),
+  ]);
+  return { courses, total };
+};
+
 const getCourseByKey = (key) => Course.findOne(keyFilter(key));
 
 // Returns null when the slug already exists.
@@ -41,4 +49,4 @@ const deleteCourse = async (key) => {
   return true;
 };
 
-module.exports = { getAllCourses, getCourseByKey, createCourse, updateCourse, deleteCourse };
+module.exports = { getAllCourses, getCoursesPage, getCourseByKey, createCourse, updateCourse, deleteCourse };

@@ -28,7 +28,13 @@ function authenticateToken(req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET, {
+      algorithms: ["HS256"],
+    });
+
+    if (!decoded.sub) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
 
     req.user = {
       id: decoded.sub,
@@ -45,6 +51,6 @@ function authenticateToken(req, res, next) {
   }
 }
 
-module.exports = {
-  authenticateToken,
-};
+// Works with both:  const { authenticateToken } = require(...)  and  const authMiddleware = require(...)
+module.exports = authenticateToken;
+module.exports.authenticateToken = authenticateToken;

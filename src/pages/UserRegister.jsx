@@ -48,7 +48,7 @@ export default function UserRegister() {
         if (!name) problem = "Name is required.";
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) problem = "Enter a valid email address.";
         else if (!department) problem = "Department is required.";
-        else if (password.length < 8 || password.length > 72) problem = "Password must be between 8 and 72 characters.";
+        else if (password.length < 12 || password.length > 72) problem = "Password must be between 12 and 72 characters.";
         else if (password !== confirmPassword) problem = "Passwords do not match.";
 
         if (problem) {
@@ -190,7 +190,7 @@ export default function UserRegister() {
                                             <span className="input-group-text bg-transparent">
                                                 <i className="bi bi-lock"></i>
                                             </span>
-                                            <input type={showPassword ? "text" : "password"} id="regPassword" name="password" className="form-control pe-5" placeholder="Minimum 8 characters" minLength={8} maxLength={72} value={formData.password} onChange={handleChange} autoComplete="new-password" required />
+                                            <input type={showPassword ? "text" : "password"} id="regPassword" name="password" className="form-control pe-5" placeholder="Minimum 12 characters" minLength={12} maxLength={72} value={formData.password} onChange={handleChange} autoComplete="new-password" required />
                                             <button type="button" className="btn position-absolute end-0 top-50 translate-middle-y border-0 bg-transparent" onClick={() => setShowPassword((visible) => !visible)}>
                                                 <i className={`bi ${showPassword ? "bi-eye-slash" : "bi-eye"}`} id="eyeIcon1"></i>
                                             </button>

@@ -31,6 +31,8 @@ export default function AdminDashboard() {
                                 <i className="bi bi-circle-fill me-1" style={{fontSize: "7px"}}></i>
                                 System Online
                             </span>
+                            <Link to="/admin-students" className="btn btn-outline-primary rounded-pill px-4">Students</Link>
+                            <Link to="/chat" className="btn btn-outline-primary rounded-pill px-4">Chat</Link>
                             <Link to="/" onClick={clearSession} className="btn btn-outline-danger rounded-pill px-4">
                                 <i className="bi bi-box-arrow-right me-1"></i>
                                 Logout

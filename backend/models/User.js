@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
       trim: true
     },
     // bcrypt hash - never store or return the plain password
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     department: { type: String, trim: true, default: "" },
     role: {
       type: String,

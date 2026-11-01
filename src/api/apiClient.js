@@ -27,4 +27,24 @@ apiClient.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+// Expired / invalid token: clear the session and send the user to the login page.
+// (Login/register calls are skipped so a wrong password does not trigger this.)
+apiClient.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        const url = error.config?.url || "";
+        const hadToken = !!sessionStorage.getItem("token");
+
+        if (error.response?.status === 401 && hadToken && !url.startsWith("/auth/")) {
+            const wasAdmin = sessionStorage.getItem("role") === "admin";
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("role");
+            localStorage.removeItem("courseHub_currentUser");
+            localStorage.removeItem("courseHub_userLoggedIn");
+            window.location.href = wasAdmin ? "/admin-login" : "/login";
+        }
+        return Promise.reject(error);
+    }
+);
+
 export default apiClient;

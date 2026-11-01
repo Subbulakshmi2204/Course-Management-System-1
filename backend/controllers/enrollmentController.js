@@ -34,6 +34,19 @@ async function enrollCourse(req, res, next) {
     });
 
     if (existingEnrollment) {
+      // Re-enrolling after withdrawing: reactivate the old record (keeps history,
+      // and respects the unique { student, course } index).
+      if (existingEnrollment.status === "withdrawn") {
+        existingEnrollment.status = "active";
+        existingEnrollment.enrolledAt = new Date();
+        await existingEnrollment.save();
+
+        return res.status(200).json({
+          message: "Course enrollment reactivated",
+          enrollment: existingEnrollment
+        });
+      }
+
       return res.status(409).json({
         message: "Already enrolled in this course"
       });
@@ -70,7 +83,8 @@ async function getMyCourses(req, res, next) {
     }
 
     const enrollments = await Enrollment.find({
-      student: studentId
+      student: studentId,
+      status: { $ne: "withdrawn" }
     })
       .populate("course")
       .sort({ enrolledAt: -1 });
@@ -99,10 +113,16 @@ async function unenrollCourse(req, res, next) {
       });
     }
 
-    const enrollment = await Enrollment.findOneAndDelete({
-      student: studentId,
-      course: courseId
-    });
+    // Keep the record as "withdrawn" instead of deleting it (enrollment history).
+    const enrollment = await Enrollment.findOneAndUpdate(
+      {
+        student: studentId,
+        course: courseId,
+        status: { $ne: "withdrawn" }
+      },
+      { $set: { status: "withdrawn" } },
+      { new: true }
+    );
 
     if (!enrollment) {
       return res.status(404).json({

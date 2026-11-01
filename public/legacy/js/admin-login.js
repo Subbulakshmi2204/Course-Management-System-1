@@ -3,7 +3,7 @@ import { togglePasswordVisibility } from './ui.js';
 
 // Admin login now uses the same backend login as students. The backend puts the
 // account's role inside the JWT; only an account whose role is "admin" gets in.
-const API_URL = 'http://localhost:4000/api/v1';
+const API_URL = window.__API_URL__ || 'http://localhost:4000/api/v1';
 
 window.togglePassword = () => togglePasswordVisibility('passwordInput', 'eyeIcon');
 

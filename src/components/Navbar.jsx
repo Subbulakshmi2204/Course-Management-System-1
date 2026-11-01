@@ -10,7 +10,7 @@ import { clearSession } from "../auth/session";
  */
 function Navbar({ variant = "student" }) {
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top py-3">
+        <nav className="navbar navbar-expand-xl navbar-light bg-white shadow-sm sticky-top py-2">
             <div className="container">
                 <NavLink className="navbar-brand fw-bold logo" to="/">
                     <i className="bi bi-mortarboard-fill me-2"></i>
@@ -27,9 +27,9 @@ function Navbar({ variant = "student" }) {
                 </button>
 
                 <div className="collapse navbar-collapse" id="mainNav">
-                    <ul className="navbar-nav mx-auto">
+                    <ul className="navbar-nav mx-auto text-nowrap small">
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="/student-dashboard">
+                            <NavLink className="nav-link" to={sessionStorage.getItem("role") === "admin" ? "/admin-dashboard" : "/student-dashboard"}>
                                 Dashboard
                             </NavLink>
                         </li>
@@ -59,9 +59,26 @@ function Navbar({ variant = "student" }) {
                                 </li>
                             </>
                         )}
+                        {sessionStorage.getItem("role") === "admin" && (
+                            <li className="nav-item">
+                                <NavLink className="nav-link" to="/admin-students">
+                                    Students
+                                </NavLink>
+                            </li>
+                        )}
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/chat">
+                                Chat
+                            </NavLink>
+                        </li>
                         <li className="nav-item">
                             <NavLink className="nav-link" to="/notifications">
                                 Notifications
+                            </NavLink>
+                        </li>
+                        <li className="nav-item">
+                            <NavLink className="nav-link" to="/profile">
+                                Profile
                             </NavLink>
                         </li>
                     </ul>
@@ -69,7 +86,7 @@ function Navbar({ variant = "student" }) {
                     <button
                         id="logoutBtn"
                         type="button"
-                        className="btn btn-outline-danger btn-sm rounded-pill px-3"
+                        className="btn btn-outline-danger btn-sm rounded-pill px-3 text-nowrap"
                         onClick={() => {
                             // Always clear the JWT + role, even if the legacy helper isn't loaded.
                             clearSession();
